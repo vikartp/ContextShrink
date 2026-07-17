@@ -6,7 +6,6 @@ import Workspace from "@/components/Workspace";
 import ActionBar from "@/components/ActionBar";
 import TokenStats from "@/components/TokenStats";
 import SecretScanner from "@/components/SecretScanner";
-import SettingsModal from "@/components/SettingsModal";
 import Footer from "@/components/Footer";
 import { useShrink } from "@/hooks/useShrink";
 import { Finding, scanSecrets, maskAllSecrets } from "@/utils/secretScanner";
@@ -29,7 +28,6 @@ export default function Home() {
   const [savings, setSavings] = useState<{ percentage: number; cost: string } | null>(null);
 
   // UI state
-  const [showSettings, setShowSettings] = useState(false);
   const [copied, setCopied] = useState(false);
 
   // Streaming hook
@@ -145,7 +143,6 @@ export default function Home() {
       <Header
         mode={mode}
         onModeChange={setMode}
-        onSettingsClick={() => setShowSettings(true)}
       />
 
       <main className="app-main">
@@ -192,10 +189,6 @@ export default function Home() {
       </main>
 
       <Footer />
-
-      {showSettings && (
-        <SettingsModal onClose={() => setShowSettings(false)} />
-      )}
     </div>
   );
 }

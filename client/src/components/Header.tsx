@@ -5,10 +5,9 @@ import ModeSelector from "./ModeSelector";
 interface HeaderProps {
   mode: string;
   onModeChange: (mode: string) => void;
-  onSettingsClick: () => void;
 }
 
-export default function Header({ mode, onModeChange, onSettingsClick }: HeaderProps) {
+export default function Header({ mode, onModeChange }: HeaderProps) {
   return (
     <header className="app-header">
       <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
@@ -43,23 +42,15 @@ export default function Header({ mode, onModeChange, onSettingsClick }: HeaderPr
 
       <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
         <a
-          href="https://github.com"
+          href="https://github.com/vikartp/ContextShrink"
           target="_blank"
           rel="noopener noreferrer"
           className="btn btn-ghost btn-icon"
-          title="GitHub"
+          title="Repo"
           style={{ fontSize: "1.1rem" }}
         >
           ⟨/⟩
         </a>
-        <button
-          className="btn btn-ghost btn-icon"
-          onClick={onSettingsClick}
-          title="Settings"
-          style={{ fontSize: "1.1rem" }}
-        >
-          ⚙️
-        </button>
       </div>
     </header>
   );
