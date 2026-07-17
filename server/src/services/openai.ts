@@ -50,7 +50,7 @@ export async function streamChatCompletion(systemPrompt: string, userMessage: st
     ],
     stream: true,
     temperature: 0.3,
-    max_tokens: 16000,
+    max_tokens: process.env.OPENAI_MAX_TOKENS ? parseInt(process.env.OPENAI_MAX_TOKENS, 10) : 16000,
   });
 
   return stream;
