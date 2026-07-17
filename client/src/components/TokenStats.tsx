@@ -63,9 +63,9 @@ export default function TokenStats({ inputTokens, outputTokens, savings }: Token
       <div className="stat-item">
         <div>
           <div className="stat-value" style={{ color: "var(--accent-amber)", fontSize: "var(--font-size-sm)" }}>
-            {savings?.cost || "$0"}
+            {formatNumber(Math.max(0, inputTokens - outputTokens))}
           </div>
-          <div className="stat-label">Cost saved</div>
+          <div className="stat-label">Tokens saved</div>
         </div>
       </div>
     </div>
