@@ -1,0 +1,10 @@
+Hello there! Could you please kindly assist me with a small task if you don't mind? I would really appreciate it if you could write a short Python script for me.
+
+Please make sure the script does the following things:
+1. It needs to connect to a SQLite database.
+2. It should create a table called "users" if it doesn't already exist.
+3. Please ensure that the table has an id, name, and email column.
+
+Also, I must remind you that it is very important that you handle errors properly. You absolutely must include try-except blocks. Please do not forget to handle exceptions because that is very crucial for the script to run safely. 
+
+Thank you so much for your help! Please output only the code and nothing else.
