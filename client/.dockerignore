@@ -1,4 +1,8 @@
 node_modules
 .next
 .env
+.git
+.gitignore
 npm-debug.log*
+README.md
+*.md

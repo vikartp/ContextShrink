@@ -2,7 +2,7 @@
 
 ## Overview
 
-ContextShrink is a **privacy-first, zero-login tool** that helps developers optimize their code and text before sending it to AI models. It operates on a simple, decoupled architecture with a **Next.js frontend** and an **Express backend**.
+ContextShrink is a **privacy-first, zero-login tool** that helps developers optimize their code and text before sending it to AI models. It operates on a simple, decoupled architecture with a **Next.js 16 frontend** (TypeScript, TailwindCSS) and an **Express backend** (TypeScript).
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -16,9 +16,14 @@ ContextShrink is a **privacy-first, zero-login tool** that helps developers opti
 │         │                 │                    │            │
 │         ▼                 ▼                    ▼            │
 │  ┌──────────────────────────────────────────────────────┐  │
-│  │              React State (page.js)                    │  │
+│  │              React State (page.tsx)                   │  │
 │  │   inputCode · output · mode · secrets · tokenCounts   │  │
 │  └────────────────────────┬─────────────────────────────┘  │
+│                           │                                 │
+│  ┌────────────────────────▼─────────────────────────────┐  │
+│  │          Theme System (next-themes)                   │  │
+│  │   Dark / Light / System · CSS custom properties       │  │
+│  └──────────────────────────────────────────────────────┘  │
 │                           │                                 │
 │                    SSE Stream (fetch)                        │
 │                           │                                 │
@@ -30,6 +35,11 @@ ContextShrink is a **privacy-first, zero-login tool** that helps developers opti
 │                    EXPRESS SERVER                            │
 │                           │                                 │
 │  ┌────────────────────────▼─────────────────────────────┐  │
+│  │            GET /api/health                            │  │
+│  │   Returns: status, model, timestamp                   │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                                                             │
+│  ┌──────────────────────────────────────────────────────┐  │
 │  │            POST /api/shrink                           │  │
 │  │   Validates input → Selects prompt → Streams SSE      │  │
 │  └────────────────────────┬─────────────────────────────┘  │
@@ -37,7 +47,12 @@ ContextShrink is a **privacy-first, zero-login tool** that helps developers opti
 │  ┌────────────────────────▼─────────────────────────────┐  │
 │  │            OpenAI Service                             │  │
 │  │   API Key, Base URL, Model — all from env vars        │  │
-│  │   Streaming chat completion                           │  │
+│  │   Streaming chat completion (temperature: 0.3)        │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                                                             │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │            Logger Middleware                           │  │
+│  │   Timestamped request logging (IST timezone)          │  │
 │  └──────────────────────────────────────────────────────┘  │
 │                                                             │
 │                    ZERO DATA RETENTION                       │
@@ -47,8 +62,8 @@ ContextShrink is a **privacy-first, zero-login tool** that helps developers opti
                      OpenAI API
                             │
                     ┌───────▼───────┐
-                    │   GPT-4o-mini  │
-                    │  (configurable)│
+                    │  gpt-4o-mini   │
+                    │ (configurable) │
                     └───────────────┘
 ```
 
@@ -62,7 +77,8 @@ The user pastes code into the **CodeMirror 6** editor or drags & drops a file. T
 
 **What happens under the hood:**
 - The `EditorPanel` component loads the appropriate CodeMirror language extension dynamically
-- `detectLanguage()` maps file extensions to language modes (14 languages supported)
+- `detectLanguage()` maps 25+ file extensions to language modes
+- The `DropZone` component validates file types against `ACCEPTED_EXTENSIONS`
 - The input text is stored in React state and shared with all dependent components
 
 ### 2. Scan — Client-Side Secret Detection
@@ -73,12 +89,13 @@ As the user types (debounced at 300ms), the **Secret Scanner** analyzes the code
 
 | Category | Examples |
 |---|---|
-| Cloud Keys | AWS Access Keys (`AKIA...`), Google API Keys (`AIza...`) |
-| API Tokens | OpenAI (`sk-...`), Stripe (`sk_live_...`), GitHub (`ghp_...`) |
-| Auth Tokens | JWT (`eyJ...`), Slack (`xox...`), SendGrid (`SG.`) |
+| Cloud Keys | AWS Access Keys (`AKIA...`), AWS Secret Keys, Google API Keys (`AIza...`) |
+| API Tokens | OpenAI (`sk-...`), Stripe (`sk_live_...`), GitHub (`ghp_...`, `github_pat_...`) |
+| Auth Tokens | JWT (`eyJ...`), Slack (`xox...`), SendGrid (`SG.`), Twilio (`SK...`) |
 | Credentials | Database URLs (`postgres://...`), Generic passwords (`password=...`) |
 | Crypto | Private key blocks (`-----BEGIN PRIVATE KEY-----`) |
 | PII | Email addresses, IP addresses |
+| Platform Keys | Heroku API keys (UUID format) |
 
 **How scanning works:**
 ```
@@ -88,7 +105,7 @@ User types → 300ms debounce → scanSecrets(code)
                           regex.exec(code)
                                     │
                         Map matches to:
-                          { type, severity, line, masked }
+                          { type, severity, line, column, masked, start, end }
                                     │
                         Deduplicate overlapping matches
                                     │
@@ -147,17 +164,66 @@ The user can:
 
 ---
 
+## Theme System
+
+ContextShrink supports **Dark**, **Light**, and **System** themes using `next-themes`:
+
+```
+ThemeProvider (next-themes)
+    │
+    ├── Stores preference in localStorage
+    ├── Adds `class="dark"` or `class="light"` to <html>
+    │
+    └── CSS Custom Properties (globals.css)
+        ├── :root         → Light theme tokens
+        └── .dark         → Dark theme tokens
+            │
+            └── TailwindCSS config maps these to utility classes
+                e.g. bg-bg-primary → var(--bg-primary)
+```
+
+The `ThemeToggle` component uses Lucide React icons (`Sun` / `Moon`) and provides instant switching.
+
+---
+
+## Server Status Monitoring
+
+The `ServerStatusBanner` component provides real-time server health feedback:
+
+```
+Page Load → GET /api/health
+                │
+        ┌───────┴───────┐
+        │               │
+     Success          Failure
+     (hide)       Show "waking up" banner
+                        │
+                  Poll every 5s
+                        │
+                     Success
+                  Show "back online" banner
+                        │
+                  Auto-hide after 5s
+```
+
+This is especially useful when the backend is deployed on platforms like Render that spin down idle instances.
+
+---
+
 ## Technology Choices
 
 | Decision | Choice | Rationale |
 |---|---|---|
-| Frontend Framework | Next.js (App Router) | One-command Vercel deployment, SSR support, modern React |
+| Language | TypeScript (strict) | Type safety across both client and server |
+| Frontend Framework | Next.js 16 (App Router) | One-command Vercel deployment, SSR support, modern React |
+| Styling | TailwindCSS + CSS Custom Properties | Utility-first with design token theming |
+| Theme System | next-themes | SSR-safe dark/light/system with no flash |
 | Code Editor | CodeMirror 6 via `@uiw/react-codemirror` | Lightweight, extensible, 14+ language modes |
+| Icons | Lucide React | Tree-shakeable, consistent SVG icon set |
 | Tokenizer | `js-tiktoken` (pure JS) | Accurate GPT-4o tokenizer that works in-browser without WASM |
 | Secret Detection | Custom regex engine | Runs client-side (privacy), zero dependencies, 15+ patterns |
-| Backend | Express.js | Minimal footprint, native SSE support, proven reliability |
+| Backend | Express.js + TypeScript | Minimal footprint, native SSE support, proven reliability |
 | AI Integration | OpenAI SDK with streaming | SSE streaming for real-time output, configurable model/endpoint |
-| Styling | Vanilla CSS | Full control over glassmorphism, animations, no build-time overhead |
 | State Management | React `useState` + custom hooks | Simple enough for single-page app, no Redux/Zustand needed |
 
 ---
@@ -171,7 +237,7 @@ The user can:
 │  ✅ Secret scanning      (never leaves browser) │
 │  ✅ Token counting        (never leaves browser) │
 │  ✅ Secret masking         (never leaves browser) │
-│  ✅ Settings (localStorage, never sent)          │
+│  ✅ Theme preference  (localStorage, never sent) │
 │                                                 │
 │  ⚠️ Code sent to backend ONLY on "Shrink It"   │
 │    (after user has had chance to mask secrets)   │
@@ -186,9 +252,50 @@ The user can:
 │  ✅ No request logging of code content          │
 │  ✅ Ephemeral processing — stream and forget    │
 │  ✅ API key stays server-side (never in browser)│
-│  ✅ CORS restricts origins                      │
+│  ✅ CORS restricts origins (+ *.vercel.app)     │
+│  ✅ Request size limited to 1MB                 │
+│  ✅ Input capped at 100,000 characters          │
 └─────────────────────────────────────────────────┘
 ```
+
+---
+
+## API Endpoints
+
+### `GET /api/health`
+
+Returns server status, configured model, and timestamp.
+
+```json
+{
+  "status": "ok",
+  "service": "ContextShrink API",
+  "model": "gpt-4o-mini",
+  "timestamp": "2026-07-18T07:00:00.000Z"
+}
+```
+
+### `POST /api/shrink`
+
+Accepts code/text/prompt and streams the compressed result via SSE.
+
+**Request:**
+```json
+{
+  "code": "string (required, max 100K chars)",
+  "mode": "code | text | prompt (default: code)",
+  "language": "string (optional, e.g. 'javascript')"
+}
+```
+
+**Response:** `text/event-stream`
+```
+data: {"content": "compressed chunk 1"}
+data: {"content": "compressed chunk 2"}
+data: [DONE]
+```
+
+**Error codes:** `400` (invalid input), `413` (too large), `500` (server error)
 
 ---
 
@@ -196,43 +303,58 @@ The user can:
 
 ```
 ContextShrink/
-├── client/                          # Next.js Frontend → Vercel
+├── client/                          # Next.js 16 Frontend
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── layout.js           # Root layout, fonts, SEO
-│   │   │   ├── page.js             # Main workspace page
-│   │   │   └── globals.css         # Design system (500+ lines)
-│   │   ├── components/             # 11 React components
-│   │   │   ├── Header.jsx          # Logo, mode selector, settings
-│   │   │   ├── Workspace.jsx       # Split-pane orchestrator
-│   │   │   ├── EditorPanel.jsx     # CodeMirror input (14 languages)
-│   │   │   ├── ResultPanel.jsx     # Streaming output viewer
-│   │   │   ├── DropZone.jsx        # Drag & drop file upload
-│   │   │   ├── ModeSelector.jsx    # Code / Text / Prompt pills
-│   │   │   ├── TokenStats.jsx      # Savings dashboard
-│   │   │   ├── SecretScanner.jsx   # Findings panel + auto-mask
-│   │   │   ├── ActionBar.jsx       # Shrink / Copy / Download
-│   │   │   ├── SettingsModal.jsx   # API config (localStorage)
-│   │   │   └── Footer.jsx          # Privacy notice
+│   │   │   ├── layout.tsx           # Root layout, fonts, SEO, ThemeProvider
+│   │   │   ├── page.tsx             # Main workspace page (state orchestrator)
+│   │   │   └── globals.css          # Design system (CSS custom properties)
+│   │   ├── components/              # 14 React components
+│   │   │   ├── Header.tsx           # Logo, mode selector, theme toggle, repo link
+│   │   │   ├── Workspace.tsx        # Split-pane orchestrator
+│   │   │   ├── EditorPanel.tsx      # CodeMirror input (14+ languages)
+│   │   │   ├── ResultPanel.tsx      # Streaming output viewer
+│   │   │   ├── DropZone.tsx         # Drag & drop file upload
+│   │   │   ├── ModeSelector.tsx     # Code / Text / Prompt pills
+│   │   │   ├── TokenStats.tsx       # Savings dashboard
+│   │   │   ├── SecretScanner.tsx    # Findings panel + auto-mask
+│   │   │   ├── ActionBar.tsx        # Shrink / Copy / Download / Abort
+│   │   │   ├── SettingsModal.tsx    # API config (localStorage)
+│   │   │   ├── ServerStatusBanner.tsx  # Live health-check indicator
+│   │   │   ├── ThemeProvider.tsx    # next-themes wrapper
+│   │   │   ├── ThemeToggle.tsx      # Dark/Light mode switch (Lucide icons)
+│   │   │   └── Footer.tsx          # Privacy notice
 │   │   ├── utils/
-│   │   │   ├── tokenCounter.js     # js-tiktoken wrapper
-│   │   │   ├── secretScanner.js    # 15+ regex patterns
-│   │   │   └── helpers.js          # Language detection, formatters
+│   │   │   ├── tokenCounter.ts     # js-tiktoken wrapper (o200k_base)
+│   │   │   ├── secretScanner.ts    # 15+ regex patterns, dedup, masking
+│   │   │   └── helpers.ts          # Language detection, formatters, debounce
 │   │   └── hooks/
-│   │       └── useShrink.js        # SSE streaming hook
-│   ├── Dockerfile
-│   └── next.config.mjs
+│   │       └── useShrink.ts        # SSE streaming hook with abort support
+│   ├── tailwind.config.ts          # TailwindCSS with CSS variable mapping
+│   ├── postcss.config.js           # PostCSS for TailwindCSS
+│   ├── tsconfig.json               # TypeScript config (strict, path aliases)
+│   ├── next.config.mjs             # Standalone output for Docker
+│   └── Dockerfile                  # Multi-stage production build
 │
-├── server/                          # Express Backend → Render
+├── server/                          # Express Backend
 │   ├── src/
-│   │   ├── index.js                # Express entry, CORS, health
-│   │   ├── routes/shrink.js        # POST /api/shrink (SSE)
-│   │   ├── services/openai.js      # OpenAI client (env config)
-│   │   └── prompts/shrinkPrompts.js # System prompts per mode
-│   ├── Dockerfile
-│   └── .env.example
+│   │   ├── index.ts                # Express entry — CORS, logger, health, 404/500
+│   │   ├── routes/shrink.ts        # POST /api/shrink (SSE streaming)
+│   │   ├── services/openai.ts      # OpenAI client (lazy singleton, env config)
+│   │   └── prompts/shrinkPrompts.ts # System prompts per mode (code/text/prompt)
+│   ├── tsconfig.json               # TypeScript config (ES2022, commonjs)
+│   ├── .env.example                # Environment variable template
+│   └── Dockerfile                  # Multi-stage production build
 │
-├── docker-compose.yml               # One-command local setup
-├── ARCHITECTURE.md                   # This file
-└── README.md
+├── sample_data/                     # Example files for testing
+│   ├── code_sample.js              # JavaScript with comments & dead code
+│   ├── text_sample.txt             # Verbose text for compression
+│   ├── prompt_sample.txt           # Unoptimized LLM prompt
+│   └── secrets_sample.js           # File with fake secrets for scanner testing
+│
+├── docker-compose.yml               # One-command local setup (server + client)
+├── check-build.js                   # Build verification script
+├── package.json                     # Workspace root (scripts, no dependencies)
+├── ARCHITECTURE.md                  # This file
+└── README.md                        # Quick start & project overview
 ```

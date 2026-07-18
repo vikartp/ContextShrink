@@ -1,18 +1,31 @@
-FROM node:20-alpine
+# ── Stage 1: Build ────────────────────────────────────────────
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+COPY . .
+RUN npm run build
+
+# ── Stage 2: Production ──────────────────────────────────────
+FROM node:20-alpine AS runner
 
 WORKDIR /app
 
 ENV NODE_ENV=production
 
+# Install only production dependencies
 COPY package.json package-lock.json* ./
-RUN npm ci 2>/dev/null || npm install
+RUN npm ci --omit=dev && npm cache clean --force
 
-COPY . .
+# Copy compiled output from builder
+COPY --from=builder /app/dist ./dist
 
-RUN npm run build
-
-RUN addgroup --system --gid 1001 appgroup
-RUN adduser --system --uid 1001 appuser
+# Create non-root user
+RUN addgroup --system --gid 1001 appgroup && \
+    adduser --system --uid 1001 appuser
 USER appuser
 
 EXPOSE 3001
