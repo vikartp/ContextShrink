@@ -7,6 +7,6 @@
     "s:server": "cd server && npm run dev",
     "s:client": "cd client && npm run dev",
     "install:all": "cd server && npm install && cd ../client && npm install",
-    "check-build": "node check-build.js"
+    "check": "node check-build.js"
   }
 }
