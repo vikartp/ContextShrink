@@ -65,8 +65,9 @@ The fastest way to get running. Requires [Docker](https://docs.docker.com/get-do
 git clone https://github.com/vikartp/ContextShrink.git
 cd ContextShrink
 
-# Set your OpenAI API key
-echo "OPENAI_API_KEY=sk-your-key-here" > .env
+# Configure backend environment
+cp server/.env.example server/.env
+# Edit server/.env and add your OPENAI_API_KEY
 
 # Start everything
 docker compose up --build
@@ -74,7 +75,7 @@ docker compose up --build
 
 That's it! Open `http://localhost:3000` in your browser.
 
-> **Optional:** You can also set `OPENAI_BASE_URL`, `OPENAI_MODEL`, and `OPENAI_MAX_TOKENS` in the `.env` file to use a custom endpoint, model, or token limit.
+> **Optional:** You can also set `OPENAI_BASE_URL`, `OPENAI_MODEL`, and `OPENAI_MAX_TOKENS` in `server/.env` to use a custom endpoint, model, or token limit.
 
 ### Option 2: Manual Setup
 

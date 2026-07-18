@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import ModeSelector from "./ModeSelector";
 import ThemeToggle from "./ThemeToggle";
+import HelpModal from "./HelpModal";
 
 interface HeaderProps {
   mode: string;
@@ -9,7 +11,10 @@ interface HeaderProps {
 }
 
 export default function Header({ mode, onModeChange }: HeaderProps) {
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
+
   return (
+    <>
     <header className="app-header">
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2">
@@ -26,6 +31,13 @@ export default function Header({ mode, onModeChange }: HeaderProps) {
       <ModeSelector mode={mode} onModeChange={onModeChange} />
 
       <div className="flex items-center gap-2">
+        <button
+          onClick={() => setIsHelpOpen(true)}
+          className="btn btn-ghost btn-icon text-lg"
+          title="Help"
+        >
+          ❓
+        </button>
         <ThemeToggle />
         <a
           href="https://github.com/vikartp/ContextShrink"
@@ -38,5 +50,7 @@ export default function Header({ mode, onModeChange }: HeaderProps) {
         </a>
       </div>
     </header>
+    {isHelpOpen && <HelpModal onClose={() => setIsHelpOpen(false)} />}
+    </>
   );
 }
