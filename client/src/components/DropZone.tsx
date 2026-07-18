@@ -74,7 +74,11 @@ export default function DropZone({ onDrop, onPaste }: DropZoneProps) {
 
   return (
     <div
-      className={`dropzone ${isDragging ? "dropzone-active" : ""}`}
+      className={`absolute inset-0 flex flex-col items-center justify-center gap-4 border-2 border-dashed rounded-md transition-all cursor-pointer ${
+        isDragging
+          ? "border-accent-cyan bg-accent-cyan-soft"
+          : "border-border-default hover:border-accent-cyan hover:bg-accent-cyan-soft"
+      }`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -88,17 +92,17 @@ export default function DropZone({ onDrop, onPaste }: DropZoneProps) {
         style={{ display: "none" }}
       />
 
-      <span className="dropzone-icon">📂</span>
+      <span className="text-4xl opacity-60">📂</span>
 
-      <div className="dropzone-text">
-        <strong>Drop a file</strong> or click to browse
+      <div className="text-sm text-text-secondary text-center">
+        <strong className="text-accent-cyan font-bold">Drop a file</strong> or click to browse
         <br />
-        <span style={{ fontSize: "var(--font-size-xs)", marginTop: "var(--space-1)", display: "block" }}>
+        <span className="text-xs mt-1 block">
           .js · .ts · .py · .java · .go · .rs · .txt · and more
         </span>
       </div>
 
-      <div style={{ display: "flex", gap: "var(--space-2)", marginTop: "var(--space-2)" }}>
+      <div className="flex gap-2 mt-2">
         <button
           className="btn btn-ghost btn-sm"
           onClick={(e) => {

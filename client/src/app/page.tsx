@@ -7,6 +7,7 @@ import ActionBar from "@/components/ActionBar";
 import TokenStats from "@/components/TokenStats";
 import SecretScanner from "@/components/SecretScanner";
 import Footer from "@/components/Footer";
+import ServerStatusBanner from "@/components/ServerStatusBanner";
 import { useShrink } from "@/hooks/useShrink";
 import { Finding, scanSecrets, maskAllSecrets } from "@/utils/secretScanner";
 import { countTokens, calculateSavings } from "@/utils/tokenCounter";
@@ -139,13 +140,15 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="app-container">
+    <div className="flex flex-col h-screen overflow-hidden bg-bg-primary text-text-primary">
       <Header
         mode={mode}
         onModeChange={setMode}
       />
 
-      <main className="app-main">
+      <main className="flex-1 flex flex-col overflow-hidden px-6 py-4 gap-3">
+        <ServerStatusBanner />
+
         <Workspace
           inputCode={inputCode}
           onInputChange={setInputCode}

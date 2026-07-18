@@ -1,11 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ============================================
    ContextShrink — Design System & Global Styles
-   Premium dark theme with glassmorphism
+   Premium theme with glassmorphism
    ============================================ */
 
-/* ---- CSS Custom Properties (Design Tokens) ---- */
+/* ---- Light Mode (Default) ---- */
 :root {
-  /* Colors — Base */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-tertiary: #e2e8f0;
+  --bg-surface: rgba(255, 255, 255, 0.65);
+  --bg-surface-hover: rgba(248, 250, 252, 0.75);
+  --bg-elevated: rgba(255, 255, 255, 0.85);
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #64748b;
+  --text-inverse: #ffffff;
+
+  --accent-cyan: #0284c7;
+  --accent-cyan-soft: rgba(2, 132, 199, 0.15);
+  --accent-cyan-glow: rgba(2, 132, 199, 0.3);
+  --accent-purple: #7e22ce;
+  --accent-purple-soft: rgba(126, 34, 206, 0.15);
+  --accent-purple-glow: rgba(126, 34, 206, 0.3);
+  --accent-amber: #d97706;
+  --accent-amber-soft: rgba(217, 119, 6, 0.15);
+  --accent-green: #059669;
+  --accent-green-soft: rgba(5, 150, 105, 0.15);
+  --accent-red: #dc2626;
+  --accent-red-soft: rgba(220, 38, 38, 0.15);
+  --accent-orange: #ea580c;
+  --accent-orange-soft: rgba(234, 88, 12, 0.15);
+  --accent-blue: #2563eb;
+  --accent-blue-soft: rgba(37, 99, 235, 0.15);
+
+  --gradient-primary: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+  --gradient-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(241, 245, 249, 0.9));
+  --gradient-shimmer: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.04), transparent);
+
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --border-default: rgba(0, 0, 0, 0.12);
+  --border-accent: rgba(2, 132, 199, 0.3);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-glow-cyan: 0 0 20px rgba(14, 165, 233, 0.2);
+  --shadow-glow-purple: 0 0 20px rgba(139, 92, 246, 0.2);
+
+  --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.8125rem;
+  --font-size-base: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+}
+
+/* ---- Dark Mode ---- */
+.dark {
   --bg-primary: #06090f;
   --bg-secondary: #0c1220;
   --bg-tertiary: #131b2e;
@@ -13,13 +96,11 @@
   --bg-surface-hover: rgba(24, 34, 64, 0.75);
   --bg-elevated: rgba(20, 30, 56, 0.8);
 
-  /* Colors — Text */
   --text-primary: #e8ecf4;
   --text-secondary: #8b95ad;
   --text-tertiary: #5a6478;
   --text-inverse: #06090f;
 
-  /* Colors — Accent */
   --accent-cyan: #00d4ff;
   --accent-cyan-soft: rgba(0, 212, 255, 0.15);
   --accent-cyan-glow: rgba(0, 212, 255, 0.3);
@@ -37,60 +118,19 @@
   --accent-blue: #3b82f6;
   --accent-blue-soft: rgba(59, 130, 246, 0.15);
 
-  /* Gradients */
   --gradient-primary: linear-gradient(135deg, #00d4ff, #a855f7);
   --gradient-surface: linear-gradient(180deg, rgba(16, 24, 48, 0.6), rgba(12, 18, 32, 0.8));
   --gradient-shimmer: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
 
-  /* Borders */
   --border-subtle: rgba(255, 255, 255, 0.06);
   --border-default: rgba(255, 255, 255, 0.1);
   --border-accent: rgba(0, 212, 255, 0.3);
 
-  /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
   --shadow-glow-cyan: 0 0 20px rgba(0, 212, 255, 0.15);
   --shadow-glow-purple: 0 0 20px rgba(168, 85, 247, 0.15);
-
-  /* Typography */
-  --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.8125rem;
-  --font-size-base: 0.875rem;
-  --font-size-md: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.5rem;
-  --font-size-2xl: 2rem;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-
-  /* Spacing */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-
-  /* Radius */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
-  --radius-full: 9999px;
-
-  /* Transitions */
-  --transition-fast: 150ms ease;
-  --transition-base: 250ms ease;
-  --transition-slow: 400ms ease;
 }
 
 /* ---- Reset & Base ---- */

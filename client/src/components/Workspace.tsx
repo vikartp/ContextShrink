@@ -35,7 +35,7 @@ export default function Workspace({
   fileName,
 }: WorkspaceProps) {
   return (
-    <div className="workspace">
+    <div className="flex-1 grid grid-cols-2 gap-3 min-h-0">
       <EditorPanel
         code={inputCode}
         onChange={onInputChange}

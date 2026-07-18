@@ -37,6 +37,13 @@ app.use(
 
 app.use(express.json({ limit: "1mb" }));
 
+// Logger middleware
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+  console.log(`[${timestamp}] ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 // Health check
 app.get("/api/health", (req: Request, res: Response) => {
   res.json({

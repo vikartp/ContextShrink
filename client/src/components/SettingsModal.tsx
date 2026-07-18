@@ -50,35 +50,19 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
   };
 
   return (
-    <div className="modal-overlay" onClick={handleBackdropClick}>
-      <div className="modal-content glass-card-elevated">
-        <div
-          style={{
-            padding: "var(--space-6)",
-            display: "flex",
-            flexDirection: "column",
-            gap: "var(--space-5)",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <h2
-              style={{
-                fontSize: "var(--font-size-lg)",
-                fontWeight: "var(--font-weight-semibold)",
-              }}
-            >
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-fade-in"
+      onClick={handleBackdropClick}
+    >
+      <div className="w-[90%] max-w-[480px] animate-slide-up bg-bg-elevated backdrop-blur-lg border border-border-default rounded-lg shadow-md">
+        <div className="p-6 flex flex-col gap-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">
               ⚙️ Settings
             </h2>
             <button
-              className="btn btn-ghost btn-icon"
+              className="btn btn-ghost btn-icon text-xl"
               onClick={onClose}
-              style={{ fontSize: "1.2rem" }}
             >
               ✕
             </button>
@@ -95,14 +79,7 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
                 setSettings({ ...settings, apiUrl: e.target.value })
               }
             />
-            <span
-              style={{
-                fontSize: "var(--font-size-xs)",
-                color: "var(--text-tertiary)",
-                marginTop: "var(--space-1)",
-                display: "block",
-              }}
-            >
+            <span className="text-xs text-text-tertiary mt-1 block">
               Leave empty to use the server&apos;s configured base URL
             </span>
           </div>
@@ -120,18 +97,7 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
             />
           </div>
 
-          <div
-            style={{
-              padding: "var(--space-3) var(--space-4)",
-              background: "var(--accent-cyan-soft)",
-              borderRadius: "var(--radius-md)",
-              fontSize: "var(--font-size-xs)",
-              color: "var(--accent-cyan)",
-              display: "flex",
-              alignItems: "flex-start",
-              gap: "var(--space-2)",
-            }}
-          >
+          <div className="px-4 py-3 bg-accent-cyan-soft rounded-md text-xs text-accent-cyan flex items-start gap-2">
             <span>🔒</span>
             <span>
               API key is configured server-side via environment variables for
@@ -140,20 +106,13 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
             </span>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              gap: "var(--space-3)",
-              justifyContent: "flex-end",
-            }}
-          >
+          <div className="flex gap-3 justify-end">
             <button className="btn btn-ghost" onClick={onClose}>
               Cancel
             </button>
             <button
-              className="btn btn-primary"
+              className="btn btn-primary min-w-[100px]"
               onClick={handleSave}
-              style={{ minWidth: "100px" }}
             >
               {saved ? "✓ Saved!" : "Save"}
             </button>

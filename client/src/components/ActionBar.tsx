@@ -24,17 +24,9 @@ export default function ActionBar({
   error,
 }: ActionBarProps) {
   return (
-    <div className="action-bar">
+    <div className="flex-shrink-0 flex items-center justify-center gap-3 py-2">
       {error && (
-        <div
-          className="badge badge-critical animate-slide-up"
-          style={{
-            padding: "var(--space-2) var(--space-4)",
-            fontSize: "var(--font-size-sm)",
-            maxWidth: "400px",
-            textAlign: "center",
-          }}
-        >
+        <div className="badge badge-critical animate-slide-up px-4 py-2 text-sm max-w-[400px] text-center">
           ⚠️ {error}
         </div>
       )}
@@ -45,14 +37,9 @@ export default function ActionBar({
         </button>
       ) : (
         <button
-          className="btn btn-primary"
+          className="btn btn-primary min-w-[160px] relative overflow-hidden"
           onClick={onShrink}
           disabled={!hasInput}
-          style={{
-            minWidth: "160px",
-            position: "relative",
-            overflow: "hidden",
-          }}
         >
           🔮 Shrink It
         </button>

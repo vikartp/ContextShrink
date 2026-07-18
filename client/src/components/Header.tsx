@@ -1,6 +1,7 @@
 "use client";
 
 import ModeSelector from "./ModeSelector";
+import ThemeToggle from "./ThemeToggle";
 
 interface HeaderProps {
   mode: string;
@@ -10,44 +11,28 @@ interface HeaderProps {
 export default function Header({ mode, onModeChange }: HeaderProps) {
   return (
     <header className="app-header">
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
-          <span style={{ fontSize: "1.5rem" }}>🔮</span>
-          <h1
-            className="gradient-text"
-            style={{
-              fontSize: "var(--font-size-lg)",
-              fontWeight: "var(--font-weight-bold)",
-              letterSpacing: "-0.02em",
-            }}
-          >
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">🔮</span>
+          <h1 className="gradient-text text-lg font-bold tracking-tight">
             ContextShrink
           </h1>
         </div>
-        <span
-          style={{
-            fontSize: "var(--font-size-xs)",
-            color: "var(--text-tertiary)",
-            padding: "2px 8px",
-            background: "var(--accent-purple-soft)",
-            borderRadius: "var(--radius-full)",
-            fontWeight: "var(--font-weight-medium)",
-          }}
-        >
+        <span className="text-xs text-text-tertiary px-2 py-0.5 bg-accent-purple-soft rounded-full font-medium">
           beta
         </span>
       </div>
 
       <ModeSelector mode={mode} onModeChange={onModeChange} />
 
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
         <a
           href="https://github.com/vikartp/ContextShrink"
           target="_blank"
           rel="noopener noreferrer"
-          className="btn btn-ghost btn-icon"
+          className="btn btn-ghost btn-icon text-lg"
           title="Repo"
-          style={{ fontSize: "1.1rem" }}
         >
           ⟨/⟩
         </a>

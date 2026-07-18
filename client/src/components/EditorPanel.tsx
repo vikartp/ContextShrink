@@ -150,24 +150,18 @@ export default function EditorPanel({
   const allExtensions = themeExt ? [themeExt, ...extensions] : extensions;
 
   return (
-    <div className="panel glass-card">
-      <div className="panel-header">
-        <div className="panel-header-title">
+    <div className="flex flex-col min-h-0 overflow-hidden bg-bg-surface backdrop-blur-md border border-border-subtle rounded-lg">
+      <div className="flex-shrink-0 flex items-center justify-between px-4 py-2 border-b border-border-subtle">
+        <div className="flex items-center gap-2 text-sm font-medium text-text-secondary">
           <span>📝</span>
           <span>Input</span>
           {fileName && (
-            <span
-              className="badge"
-              style={{
-                background: "var(--accent-cyan-soft)",
-                color: "var(--accent-cyan)",
-              }}
-            >
+            <span className="badge bg-accent-cyan-soft text-accent-cyan">
               {fileName}
             </span>
           )}
         </div>
-        <div className="panel-header-actions">
+        <div className="flex items-center gap-1">
           {code && (
             <button className="btn btn-ghost btn-sm" onClick={onClear}>
               ✕ Clear
@@ -176,7 +170,7 @@ export default function EditorPanel({
         </div>
       </div>
 
-      <div className="panel-body">
+      <div className="flex-1 min-h-0 overflow-hidden relative">
         {!code ? (
           <DropZone onDrop={handleDrop} onPaste={handlePaste} />
         ) : (
@@ -196,7 +190,7 @@ export default function EditorPanel({
         )}
       </div>
 
-      <div className="panel-footer">
+      <div className="flex-shrink-0 flex items-center justify-between px-4 py-2 border-t border-border-subtle text-xs text-text-tertiary">
         <span>
           {formatNumber(tokenCount)} tokens · {code.length.toLocaleString()} chars
         </span>

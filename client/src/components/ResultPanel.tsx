@@ -75,24 +75,18 @@ export default function ResultPanel({
   const allExtensions = themeExt ? [themeExt, ...extensions] : extensions;
 
   return (
-    <div className="panel glass-card">
-      <div className="panel-header">
-        <div className="panel-header-title">
+    <div className="flex flex-col min-h-0 overflow-hidden bg-bg-surface backdrop-blur-md border border-border-subtle rounded-lg">
+      <div className="flex-shrink-0 flex items-center justify-between px-4 py-2 border-b border-border-subtle">
+        <div className="flex items-center gap-2 text-sm font-medium text-text-secondary">
           <span>✨</span>
           <span>Shrunk Output</span>
           {isStreaming && (
-            <span
-              className="badge animate-pulse"
-              style={{
-                background: "var(--accent-purple-soft)",
-                color: "var(--accent-purple)",
-              }}
-            >
+            <span className="badge animate-pulse bg-accent-purple-soft text-accent-purple">
               ● streaming...
             </span>
           )}
         </div>
-        <div className="panel-header-actions">
+        <div className="flex items-center gap-1">
           {output && (
             <button className="btn btn-ghost btn-sm" onClick={onCopy}>
               {copied ? "✓ Copied!" : "📋 Copy"}
@@ -101,17 +95,17 @@ export default function ResultPanel({
         </div>
       </div>
 
-      <div className="panel-body">
+      <div className="flex-1 min-h-0 overflow-hidden relative">
         {!output && !isStreaming ? (
           <div className="empty-state">
             <span className="empty-state-icon">✨</span>
             <span>Your shrunk code will appear here</span>
-            <span style={{ fontSize: "var(--font-size-xs)" }}>
+            <span className="text-xs">
               Paste code on the left and click &quot;Shrink It&quot;
             </span>
           </div>
         ) : (
-          <div style={{ height: "100%", position: "relative" }}>
+          <div className="h-full relative">
             <CodeMirror
               value={output}
               readOnly={true}
@@ -126,13 +120,7 @@ export default function ResultPanel({
               style={{ height: "100%", overflow: "auto" }}
             />
             {isStreaming && (
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: "var(--space-3)",
-                  right: "var(--space-3)",
-                }}
-              >
+              <div className="absolute bottom-3 right-3">
                 <span className="streaming-cursor" />
               </div>
             )}
@@ -140,7 +128,7 @@ export default function ResultPanel({
         )}
       </div>
 
-      <div className="panel-footer">
+      <div className="flex-shrink-0 flex items-center justify-between px-4 py-2 border-t border-border-subtle text-xs text-text-tertiary">
         <span>
           {output
             ? `${formatNumber(tokenCount)} tokens · ${output.length.toLocaleString()} chars`

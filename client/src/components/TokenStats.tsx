@@ -13,59 +13,57 @@ export default function TokenStats({ inputTokens, outputTokens, savings }: Token
   const percentage = savings?.percentage || 0;
 
   return (
-    <div className="stats-bar glass-card">
-      <div className="stat-item">
+    <div className="flex-shrink-0 flex items-center gap-6 px-5 py-3 rounded-md animate-slide-up bg-bg-surface backdrop-blur-md border border-border-subtle">
+      <div className="flex items-center gap-2">
         <div>
-          <div className="stat-value" style={{ color: "var(--text-secondary)" }}>
+          <div className="text-base font-bold tabular-nums text-text-secondary">
             {formatNumber(inputTokens)}
           </div>
-          <div className="stat-label">Original</div>
+          <div className="text-xs text-text-tertiary">Original</div>
         </div>
       </div>
 
-      <div style={{ color: "var(--text-tertiary)", fontSize: "1.2rem" }}>→</div>
+      <div className="text-text-tertiary text-xl">→</div>
 
-      <div className="stat-item">
+      <div className="flex items-center gap-2">
         <div>
-          <div className="stat-value" style={{ color: "var(--accent-cyan)" }}>
+          <div className="text-base font-bold tabular-nums text-accent-cyan">
             {formatNumber(outputTokens)}
           </div>
-          <div className="stat-label">Shrunk</div>
+          <div className="text-xs text-text-tertiary">Shrunk</div>
         </div>
       </div>
 
-      <div className="stats-progress">
+      <div className="flex-1 h-1.5 bg-bg-secondary rounded-full overflow-hidden">
         <div
-          className="stats-progress-fill"
+          className="h-full rounded-full bg-gradient-to-br from-accent-cyan to-accent-purple transition-[width] duration-800 ease-out"
           style={{ width: `${100 - percentage}%` }}
         />
       </div>
 
-      <div className="stat-item">
+      <div className="flex items-center gap-2">
         <div>
           <div
-            className="stat-value"
-            style={{
-              color:
-                percentage >= 30
-                  ? "var(--accent-green)"
-                  : percentage >= 15
-                    ? "var(--accent-amber)"
-                    : "var(--text-secondary)",
-            }}
+            className={`text-base font-bold tabular-nums ${
+              percentage >= 30
+                ? "text-accent-green"
+                : percentage >= 15
+                  ? "text-accent-amber"
+                  : "text-text-secondary"
+            }`}
           >
             {percentage}%
           </div>
-          <div className="stat-label">Saved</div>
+          <div className="text-xs text-text-tertiary">Saved</div>
         </div>
       </div>
 
-      <div className="stat-item">
+      <div className="flex items-center gap-2">
         <div>
-          <div className="stat-value" style={{ color: "var(--accent-amber)", fontSize: "var(--font-size-sm)" }}>
+          <div className="text-sm font-bold tabular-nums text-accent-amber">
             {formatNumber(Math.max(0, inputTokens - outputTokens))}
           </div>
-          <div className="stat-label">Tokens saved</div>
+          <div className="text-xs text-text-tertiary">Tokens saved</div>
         </div>
       </div>
     </div>
