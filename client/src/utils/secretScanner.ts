@@ -128,7 +128,7 @@ export function scanSecrets(code: string): Finding[] {
   if (!code) return [];
 
   const findings: Finding[] = [];
-  const lines = code.split("\n");
+
 
   for (const pattern of SECRET_PATTERNS) {
     // Reset regex state

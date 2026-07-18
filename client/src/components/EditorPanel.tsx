@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useRef, useState, useEffect } from "react";
-import { detectLanguage, isAcceptedFile, getLanguageLabel, formatNumber } from "@/utils/helpers";
+import { useCallback, useState, useEffect } from "react";
+import { detectLanguage, getLanguageLabel, formatNumber } from "@/utils/helpers";
 import DropZone from "./DropZone";
 import dynamic from "next/dynamic";
 

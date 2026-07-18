@@ -11,7 +11,7 @@ import ServerStatusBanner from "@/components/ServerStatusBanner";
 import { useShrink } from "@/hooks/useShrink";
 import { Finding, scanSecrets, maskAllSecrets } from "@/utils/secretScanner";
 import { countTokens, calculateSavings } from "@/utils/tokenCounter";
-import { debounce } from "@/utils/helpers";
+
 
 export default function Home() {
   // Core state
