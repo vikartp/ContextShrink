@@ -112,6 +112,7 @@ export default function EditorPanel({
 }: EditorPanelProps) {
   const [extensions, setExtensions] = useState<any[]>([]);
   const [themeExt, setThemeExt] = useState<any>(null);
+  const [forceEditorOpen, setForceEditorOpen] = useState(false);
 
   // Load theme
   useEffect(() => {
@@ -137,15 +138,6 @@ export default function EditorPanel({
     [onLanguageChange, onFileDrop]
   );
 
-  // Handle paste from clipboard
-  const handlePaste = useCallback(async () => {
-    try {
-      const text = await navigator.clipboard.readText();
-      if (text) onChange(text);
-    } catch {
-      // Clipboard API not available
-    }
-  }, [onChange]);
 
   const allExtensions = themeExt ? [themeExt, ...extensions] : extensions;
 
@@ -162,8 +154,11 @@ export default function EditorPanel({
           )}
         </div>
         <div className="flex items-center gap-1">
-          {code && (
-            <button className="btn btn-ghost btn-sm" onClick={onClear}>
+          {(code || forceEditorOpen) && (
+            <button className="btn btn-ghost btn-sm" onClick={() => {
+              onClear();
+              setForceEditorOpen(false);
+            }}>
               ✕ Clear
             </button>
           )}
@@ -171,8 +166,8 @@ export default function EditorPanel({
       </div>
 
       <div className="flex-1 min-h-0 overflow-hidden relative">
-        {!code ? (
-          <DropZone onDrop={handleDrop} onPaste={handlePaste} />
+        {!code && !forceEditorOpen ? (
+          <DropZone onDrop={handleDrop} onOpenEditor={() => setForceEditorOpen(true)} />
         ) : (
           <CodeMirror
             value={code}

@@ -5,10 +5,10 @@ import { isAcceptedFile } from "@/utils/helpers";
 
 interface DropZoneProps {
   onDrop: (content: string, name: string) => void;
-  onPaste: () => void;
+  onOpenEditor: () => void;
 }
 
-export default function DropZone({ onDrop, onPaste }: DropZoneProps) {
+export default function DropZone({ onDrop, onOpenEditor }: DropZoneProps) {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -107,10 +107,10 @@ export default function DropZone({ onDrop, onPaste }: DropZoneProps) {
           className="btn btn-ghost btn-sm"
           onClick={(e) => {
             e.stopPropagation();
-            onPaste();
+            onOpenEditor();
           }}
         >
-          📋 Paste from Clipboard
+          ⌨️ Open Editor
         </button>
       </div>
     </div>
