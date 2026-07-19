@@ -4,14 +4,17 @@ import { useState } from "react";
 import ModeSelector from "./ModeSelector";
 import ThemeToggle from "./ThemeToggle";
 import HelpModal from "./HelpModal";
+import SampleDataModal from "./SampleDataModal";
 
 interface HeaderProps {
   mode: string;
   onModeChange: (mode: string) => void;
+  onSampleLoad: (content: string, filename: string, category: string) => void;
 }
 
-export default function Header({ mode, onModeChange }: HeaderProps) {
+export default function Header({ mode, onModeChange, onSampleLoad }: HeaderProps) {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isSampleOpen, setIsSampleOpen] = useState(false);
 
   return (
     <>
@@ -32,6 +35,13 @@ export default function Header({ mode, onModeChange }: HeaderProps) {
 
       <div className="flex items-center gap-2">
         <button
+          onClick={() => setIsSampleOpen(true)}
+          className="btn btn-ghost text-sm"
+          title="Load sample data"
+        >
+          📂 Try Sample
+        </button>
+        <button
           onClick={() => setIsHelpOpen(true)}
           className="btn btn-ghost btn-icon text-lg"
           title="Help"
@@ -51,6 +61,15 @@ export default function Header({ mode, onModeChange }: HeaderProps) {
       </div>
     </header>
     {isHelpOpen && <HelpModal onClose={() => setIsHelpOpen(false)} />}
+    {isSampleOpen && (
+      <SampleDataModal
+        onClose={() => setIsSampleOpen(false)}
+        onSelect={(content, filename, category) => {
+          onSampleLoad(content, filename, category);
+          setIsSampleOpen(false);
+        }}
+      />
+    )}
     </>
   );
 }

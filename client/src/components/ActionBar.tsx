@@ -10,6 +10,7 @@ interface ActionBarProps {
   hasOutput: boolean;
   copied: boolean;
   error: string | null;
+  animateShrink?: boolean;
 }
 
 export default function ActionBar({
@@ -22,6 +23,7 @@ export default function ActionBar({
   hasOutput,
   copied,
   error,
+  animateShrink,
 }: ActionBarProps) {
   return (
     <div className="flex-shrink-0 flex items-center justify-center gap-3 py-2">
@@ -37,7 +39,7 @@ export default function ActionBar({
         </button>
       ) : (
         <button
-          className="btn btn-primary min-w-[160px] relative overflow-hidden"
+          className={`btn btn-primary min-w-[160px] relative overflow-hidden${animateShrink ? " animate-attention-pulse" : ""}`}
           onClick={onShrink}
           disabled={!hasInput}
         >

@@ -26,6 +26,7 @@ Every developer pastes code into LLMs daily — but they're burning **30-60% of 
 ## Features
 
 - **3 Shrink Modes** — Code compression, Text condensing, Prompt optimization
+- **Try Sample Data** — Quickly load categorized samples (Code/Text/Prompt) to test the tool, with automatic mode switching
 - **Drag & Drop** — Drop any code file directly into the editor
 - **Real-time Token Counter** — Exact token counts using GPT-4o tokenizer (`o200k_base` encoding)
 - **Side-by-side View** — Compare original vs. shrunk code with live streaming

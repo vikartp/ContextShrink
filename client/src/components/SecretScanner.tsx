@@ -6,9 +6,10 @@ import { Finding, getScanSummary } from "@/utils/secretScanner";
 interface SecretScannerProps {
   secrets: Finding[];
   onMaskAll: () => void;
+  animateMask?: boolean;
 }
 
-export default function SecretScanner({ secrets, onMaskAll }: SecretScannerProps) {
+export default function SecretScanner({ secrets, onMaskAll, animateMask }: SecretScannerProps) {
   const [expanded, setExpanded] = useState(false);
   const summary = getScanSummary(secrets);
 
@@ -58,7 +59,7 @@ export default function SecretScanner({ secrets, onMaskAll }: SecretScannerProps
         </div>
 
         <button
-          className="btn btn-danger btn-sm"
+          className={`btn btn-danger btn-sm${animateMask ? " animate-attention-danger" : ""}`}
           onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
             e.stopPropagation();
             onMaskAll();

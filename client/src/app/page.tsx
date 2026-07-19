@@ -11,6 +11,7 @@ import ServerStatusBanner from "@/components/ServerStatusBanner";
 import { useShrink } from "@/hooks/useShrink";
 import { Finding, scanSecrets, maskAllSecrets } from "@/utils/secretScanner";
 import { countTokens, calculateSavings } from "@/utils/tokenCounter";
+import { detectLanguage } from "@/utils/helpers";
 
 
 export default function Home() {
@@ -31,6 +32,12 @@ export default function Home() {
   // UI state
   const [copied, setCopied] = useState(false);
 
+  // Attention animation state
+  const [animateShrink, setAnimateShrink] = useState(false);
+  const [animateMask, setAnimateMask] = useState(false);
+  const hasAnimatedShrinkRef = useRef(false);
+  const prevSecretsLengthRef = useRef(0);
+
   // Streaming hook
   const { shrink, output, isStreaming, error, abort, reset } = useShrink();
 
@@ -41,6 +48,13 @@ export default function Home() {
     scanRef.current = setTimeout(() => {
       const findings = scanSecrets(inputCode);
       setSecrets(findings);
+
+      // Trigger mask animation if new secrets were found (in any flow)
+      if (findings.length > prevSecretsLengthRef.current) {
+        setAnimateMask(true);
+        setTimeout(() => setAnimateMask(false), 5000);
+      }
+      prevSecretsLengthRef.current = findings.length;
     }, 300);
     return () => window.clearTimeout(scanRef.current as any);
   }, [inputCode]);
@@ -52,6 +66,13 @@ export default function Home() {
     tokenRef.current = setTimeout(async () => {
       const count = await countTokens(inputCode);
       setInputTokens(count);
+
+      // Trigger shrink animation when valid code is first entered (in any flow)
+      if (inputCode.trim().length > 10 && !hasAnimatedShrinkRef.current) {
+        setAnimateShrink(true);
+        setTimeout(() => setAnimateShrink(false), 5000);
+        hasAnimatedShrinkRef.current = true;
+      }
     }, 200);
     return () => window.clearTimeout(tokenRef.current as any);
   }, [inputCode]);
@@ -76,12 +97,14 @@ export default function Home() {
   // Handle shrink action
   const handleShrink = useCallback(() => {
     if (!inputCode.trim()) return;
+    setAnimateShrink(false);
     shrink(inputCode, mode, language);
   }, [inputCode, mode, language, shrink]);
 
   // Handle auto-mask all secrets
   const handleMaskAll = useCallback(() => {
     if (secrets.length === 0) return;
+    setAnimateMask(false);
     const masked = maskAllSecrets(inputCode, secrets);
     setInputCode(masked);
   }, [inputCode, secrets]);
@@ -130,6 +153,10 @@ export default function Home() {
     setOutputTokens(0);
     setSavings(null);
     setFileName("");
+    setAnimateShrink(false);
+    setAnimateMask(false);
+    hasAnimatedShrinkRef.current = false;
+    prevSecretsLengthRef.current = 0;
     reset();
   }, [reset]);
 
@@ -139,11 +166,26 @@ export default function Home() {
     setFileName(name);
   }, []);
 
+  // Handle sample data load
+  const handleSampleLoad = useCallback((content: string, filename: string, category: string) => {
+    const lang = detectLanguage(filename);
+    setInputCode(content);
+    setFileName(filename);
+    setLanguage(lang);
+    setMode(category); // Auto-switch mode to match the sample's category
+    
+    // Reset animation trackers so they trigger again
+    hasAnimatedShrinkRef.current = false;
+    prevSecretsLengthRef.current = 0;
+    reset();
+  }, [reset]);
+
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-bg-primary text-text-primary">
       <Header
         mode={mode}
         onModeChange={setMode}
+        onSampleLoad={handleSampleLoad}
       />
 
       <main className="flex-1 flex flex-col overflow-hidden px-6 py-4 gap-3">
@@ -168,6 +210,7 @@ export default function Home() {
         <SecretScanner
           secrets={secrets}
           onMaskAll={handleMaskAll}
+          animateMask={animateMask}
         />
 
         {savings && !isStreaming && (
@@ -188,6 +231,7 @@ export default function Home() {
           hasOutput={!!output}
           copied={copied}
           error={error}
+          animateShrink={animateShrink}
         />
       </main>
 

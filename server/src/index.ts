@@ -3,6 +3,7 @@ dotenv.config({ override: true });
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import shrinkRouter from "./routes/shrink";
+import sampleDataRouter from "./routes/sampleData";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -56,6 +57,7 @@ app.get("/api/health", (_req: Request, res: Response) => {
 
 // Routes
 app.use("/api/shrink", shrinkRouter);
+app.use("/api/samples", sampleDataRouter);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
