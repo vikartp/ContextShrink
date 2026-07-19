@@ -23,6 +23,15 @@ Every developer pastes code into LLMs daily — but they're burning **30-60% of 
 2. 🔒 **Scrubs** — Auto-masks detected secrets with safe `[REDACTED]` placeholders
 3. ✨ **Shrinks** — AI-powered compression strips comments, dead code, and boilerplate while preserving all functional logic
 
+## 🚀 Pro Tip: Best Use Case (VS Code Integration)
+
+Run ContextShrink locally and integrate it directly into your VS Code workflow:
+
+1. Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac) in VS Code.
+2. Search for and select **Simple Browser: Show**.
+3. Enter your local ContextShrink URL (e.g., `http://localhost:3000`).
+4. Now you have ContextShrink open right next to your code! You can easily copy/paste code back and forth, and copy the minified output to send directly to GitHub Copilot Chat or Claude Code.
+
 ## Features
 
 - **3 Shrink Modes** — Code compression, Text condensing, Prompt optimization
@@ -32,6 +41,7 @@ Every developer pastes code into LLMs daily — but they're burning **30-60% of 
 - **Side-by-side View** — Compare original vs. shrunk code with live streaming
 - **Streaming Output** — Watch AI compress your code in real-time via SSE
 - **Cost Calculator** — See how much money you're saving per request
+- **Help & Guide** — Built-in help modal with quick reference and usage tips
 - **Dark / Light Theme** — System-aware theme toggle with smooth transitions
 - **Server Status Banner** — Live health-check indicator with automatic reconnection
 - **Privacy First** — Secret scanning happens 100% in your browser

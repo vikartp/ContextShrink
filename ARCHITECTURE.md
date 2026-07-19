@@ -309,8 +309,8 @@ ContextShrink/
 │   │   │   ├── layout.tsx           # Root layout, fonts, SEO, ThemeProvider
 │   │   │   ├── page.tsx             # Main workspace page (state orchestrator)
 │   │   │   └── globals.css          # Design system (CSS custom properties)
-│   │   ├── components/              # 14 React components
-│   │   │   ├── Header.tsx           # Logo, mode selector, theme toggle, repo link
+│   │   ├── components/              # 16 React components
+│   │   │   ├── Header.tsx           # Logo, help, theme toggle, repo link
 │   │   │   ├── Workspace.tsx        # Split-pane orchestrator
 │   │   │   ├── EditorPanel.tsx      # CodeMirror input (14+ languages)
 │   │   │   ├── ResultPanel.tsx      # Streaming output viewer
@@ -320,6 +320,8 @@ ContextShrink/
 │   │   │   ├── SecretScanner.tsx    # Findings panel + auto-mask
 │   │   │   ├── ActionBar.tsx        # Shrink / Copy / Download / Abort
 │   │   │   ├── SettingsModal.tsx    # API config (localStorage)
+│   │   │   ├── HelpModal.tsx        # Quick reference guide & usage tips
+│   │   │   ├── SampleDataModal.tsx  # Categorized sample data loader
 │   │   │   ├── ServerStatusBanner.tsx  # Live health-check indicator
 │   │   │   ├── ThemeProvider.tsx    # next-themes wrapper
 │   │   │   ├── ThemeToggle.tsx      # Dark/Light mode switch (Lucide icons)
